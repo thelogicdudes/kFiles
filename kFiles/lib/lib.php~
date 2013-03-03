@@ -1,0 +1,401 @@
+<?php
+
+/***************************************************************************
+
+								 Kevin's PHP Library
+							 LastUpdate: Dec-13 2012 	
+									 Version: 1.2 
+				 http://tbusinessadvisors.pro - @kevashcraft 
+
+**************************************************************************/
+
+
+	/*****OOP*****/
+
+	class kSession
+	{
+		public $hr = "http://tbusinessadvisors.pro/";
+		public $dr = "/var/www/tbusinessadvisors.pro/"; 
+		public $dname = "tbusinessadvisors.pro";
+		public $iam = "onsv9s7vyhfgbjk34ebstnhtyj6q9230u90u0asnln5uj573r23rfdjkb kz n32r@#R ujbw#$9";
+		public $sid = null;
+		public $is_bot = true;
+		public $is_mobile = false;
+		public $page = "home";
+		public $pinfo = "none";
+		public $ppage = "none";
+		
+		function __construct() 
+		{
+			$kSql = new sqlsesh();
+			require_once 'lib/Mobile_Detect.php';
+			$detect = new Mobile_Detect;
+			$is_mobile = $detect->isMobile(); 
+			$IP = ip2long($_SERVER['REMOTE_ADDR']);
+			$userAgent = $_SERVER['HTTP_USER_AGENT'];
+			$crawlers = 'Google|msnbot|Rambler|Yahoo|AbachoBOT|accoona|AcioRobot|ASPSeek|CocoCrawler|Dumbot|FAST-WebCrawler|GeonaBot|Gigabot|Lycos|MSRBOT|Scooter|AltaVista|IDBot|eStyle|Scrubby';
+			if(preg_match("/$crawlers/i", $userAgent))
+			{
+				$kSql->insert('visits', array($page, $pinfo, $IP, $userAgent, 1),"page_name, page_info, IP, user_agent, is_bot");
+				$is_bot = true;
+			}
+			if(isset($_GET['page'])) $this->page = $_GET['page'];
+			if(isset($_GET['pinfo'])) $this->pinfo = $_GET['pinfo'];
+			if(!$is_bot)
+			{
+				session_start();
+				$sid = session_id();
+				$this->is_bot = false;
+			}
+			else $sid = 'No, I am a crawler';
+			$this->sid = $sid;
+			if(isset($_SERVER['HTTP_REFERER'])) $this->ppage = $ppage = $_SERVER['HTTP_REFERER'];
+			$ua=getBrowser();
+			$kSql->insert('visits', array($sid, $page, $pinfo, $IP, $ppage, $ua['name'], $ua['version'], $ua['platform'], $userAgent, 0),"session_id, page_name, page_info, IP, previous_page, browser_name, browser_version, os, user_agent, is_bot");
+		}
+	}
+
+
+
+
+
+	/******MySQL Session*****/
+	class sqlsesh
+	{
+		private $db_host = 'localhost';
+		private $db_user = 'tbusinessadvisors';
+		private $db_pass = 'testing!';
+		private $db_name = 'tbusinessadvisors';
+		private $con = false;
+		private $result = array();
+
+		function __construct() 
+		{
+			if(!$this->con)
+			{
+				$myconn = @mysql_connect($this->db_host,$this->db_user,$this->db_pass);
+				if($myconn)
+				{
+					$seldb = @mysql_select_db($this->db_name,$myconn);
+					if($seldb)
+					{
+						$this->con = true;
+						return true;
+					}
+					else return false;
+				}
+				else return false;
+			}
+			else return true;
+		}
+
+
+		private function tableExists($table)
+		{
+			$tablesInDb = @mysql_query('SHOW TABLES FROM '.$this->db_name.' LIKE "'.$table.'"');
+			if($tablesInDb)
+			{
+				if(mysql_num_rows($tablesInDb)==1)
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+		}
+	
+	
+		public function select($table, $where = null, $rows = '*', $limit = null, $order = "created_on DESC, created_at DESC")
+		{
+			$this->flushResults();
+			$q = 'SELECT '.$rows.' FROM '.$table;
+			if($where != null) $q .= ' WHERE '.$where;
+			if($order != null) $q .= ' ORDER BY '.$order;
+			if($limit != null) $q .= ' LIMIT '.$limit;
+//		echo $q . "\n";
+			$query = @mysql_query($q);
+			if($query)
+			{
+				$this->numResults = mysql_num_rows($query);
+				for($i = 0; $i < $this->numResults; $i++)
+				{
+					$r = mysql_fetch_array($query);
+					$key = array_keys($r);
+					for($x = 0; $x < count($key); $x++)
+					{
+						// Sanitizes keys so only alphavalues are allowed
+						if(!is_int($key[$x]))
+						{
+							if(mysql_num_rows($query) > 1) $this->result[$i][$key[$x]] = $r[$key[$x]];
+							else if(mysql_num_rows($query) < 1) $this->result = null;
+							else $this->result[$key[$x]] = $r[$key[$x]];
+						}
+					}
+				}
+				return true;
+			}
+			else return false;
+		}
+
+
+		public function selectret($table, $where = null, $rows = '*', $limit = null, $order = "created_on DESC, created_at DESC")
+		{
+			$this->flushResults();
+			$q = 'SELECT '.$rows.' FROM '.$table;
+			if($where != null) $q .= ' WHERE '.$where;
+			if($order != null) $q .= ' ORDER BY '.$order;
+			if($limit != null) $q .= ' LIMIT '.$limit;
+//		echo $q . "\n";
+			$query = @mysql_query($q);
+			if($query)
+			{
+				$this->numResults = mysql_num_rows($query);
+				for($i = 0; $i < $this->numResults; $i++)
+				{
+					$r = mysql_fetch_array($query);
+					$key = array_keys($r);
+					for($x = 0; $x < count($key); $x++)
+					{
+						// Sanitizes keys so only alphavalues are allowed
+						if(!is_int($key[$x]))
+						{
+							if(mysql_num_rows($query) > 1) $this->result[$i][$key[$x]] = $r[$key[$x]];
+							else if(mysql_num_rows($query) < 1) $this->result = null;
+							else $this->result[$key[$x]] = $r[$key[$x]];
+						}
+					}
+				}
+				return $this->result;
+			}
+			else return false;
+		}
+
+
+		public function alter($table,$how)
+			{
+				if($this->tableExists($table))
+				{
+					$alter = "ALTER TABLE " . $table . " " . $how;
+//					echo "\nALTER: $alter \n";
+					$doit = @mysql_query($alter);
+					if($doit) return true;
+					else return false;
+				}
+				else echo "\nTable does not exist.\n";
+			}
+			
+			
+		public function insert($table,$values,$rows = null,$where = null)
+		{
+			if($this->tableExists($table))
+			{
+				$insert = 'INSERT INTO '.$table;
+				if($rows != null)
+				{
+					$insert .= ' ('.$rows.')';
+				}
+				for($i = 0; $i < count($values); $i++)
+				{
+					if(is_string($values[$i]) && $values[$i] != 'CURDATE()' && $values[$i] != 'CURTIME()' ) $values[$i] = '"'.$values[$i].'"';
+				}
+				$values = implode(',',$values);
+				$insert .= ' VALUES ('.$values.')';
+				if($where != null) $insert .= ' WHERE '.$where;
+//				echo "\n $insert \n";	
+				$ins = @mysql_query($insert);
+				if($ins) return true;
+				else return false;
+			}
+		}
+
+
+		public function update($table,$rows,$where)
+		{
+			if($this->tableExists($table))
+			{
+			// Parse the where values
+			// even values (including 0) contain the where rows
+			// odd values contain the clauses for the row
+			$update = 'UPDATE '.$table.' SET ';
+			$keys = array_keys($rows);
+			for($i = 0; $i < count($rows); $i++)
+			{
+				if(is_string($rows[$keys[$i]]))
+				{
+					$update .= $keys[$i].'="'.$rows[$keys[$i]].'"';
+				}
+				else $update .= $keys[$i].'='.$rows[$keys[$i]];
+
+				// Parse to add commas
+				if($i != count($rows)-1) $update .= ',';
+			}
+
+			$update .= ' WHERE '.$where;
+			$query = @mysql_query($update);
+			if($query) return true;
+			else return false;
+			}
+		else {
+			return false;
+			}
+		}
+
+
+		public function delete($table,$where = null)
+		{
+			if($this->tableExists($table))
+			{
+				if($where == null) 	$delete = 'DELETE '.$table;
+				else	$delete = 'DELETE FROM '.$table.' WHERE '.$where;
+				$del = @mysql_query($delete);
+				if($del) return true;
+				else	return false;
+			}
+			else	return false;
+		}
+
+
+		public function db_name() 
+		{
+			return $this->db_name;
+		}
+
+		
+		public function showtables()
+		{
+			$this->flushResults();
+			$q = 'SHOW TABLES FROM ' . $this->db_name;
+			$query = @mysql_query($q);
+			if($query)
+			{
+				$tablesin = "Tables_in_" . $this->db_name;
+				$this->numResults = mysql_num_rows($query);
+				for($i = 0; $i < $this->numResults; $i++)
+				{
+					$r = mysql_fetch_array($query);
+					$this->result[$i] = $r[$tablesin];
+				}
+				return $this->result;
+			}
+			else return false;
+		}
+		
+
+		public function flushResults()
+		{
+			$this->result = null;
+			return;
+		}
+
+		
+		public function getResult()
+		{
+			return $this->result;
+		}
+	}
+
+
+
+
+	/****** FUNCTIONS ******/
+
+	function getBrowser()
+	{
+		if(!isset($_SERVER['HTTP_USER_AGENT'])) return false;
+		$u_agent = $_SERVER['HTTP_USER_AGENT'];
+		$bname = 'Unknown';
+		$ub = 'Unknown';
+		$platform = 'Unknown';
+		$version= "";
+		
+		//First get the platform?
+		if (preg_match('/linux/i', $u_agent))
+		{
+			$platform = 'linux';
+		}
+		elseif (preg_match('/macintosh|mac os x/i', $u_agent))
+		{
+			$platform = 'mac';
+		}
+		elseif (preg_match('/windows|win32/i', $u_agent))
+		{
+			$platform = 'windows';
+		}
+		   
+		// Next get the name of the useragent yes seperately and for good reason
+		if(preg_match('/MSIE/i',$u_agent) && !preg_match('/Opera/i',$u_agent))
+		{
+			$bname = 'Internet Explorer';
+			$ub = "MSIE";
+		}
+		elseif(preg_match('/Firefox/i',$u_agent))
+		{
+			$bname = 'Mozilla Firefox';
+			$ub = "Firefox";
+		}
+		elseif(preg_match('/Chrome/i',$u_agent))
+		{
+			$bname = 'Google Chrome';
+			$ub = "Chrome";
+		}
+		elseif(preg_match('/Safari/i',$u_agent))
+		{
+			$bname = 'Apple Safari';
+			$ub = "Safari";
+		}
+		elseif(preg_match('/Opera/i',$u_agent))
+		{
+			$bname = 'Opera';
+			$ub = "Opera";
+		}
+		elseif(preg_match('/Netscape/i',$u_agent))
+		{
+			$bname = 'Netscape';
+			$ub = "Netscape";
+		}
+		// finally get the correct version number
+		$known = array('Version', $ub, 'other');
+		$pattern = '#(?<browser>' . join('|', $known) .
+		')[/ ]+(?<version>[0-9.|a-zA-Z.]*)#';
+		if (!preg_match_all($pattern, $u_agent, $matches))
+		{
+		// we have no matching number just continue
+		}
+			   
+		// see how many we have
+		$i = count($matches['browser']);
+		if ($i > 1)
+		{
+		//we will have two since we are not using 'other' argument yet
+		//see if version is before or after the name
+			if (strripos($u_agent,"Version") < strripos($u_agent,$ub))
+			{
+				$version= $matches['version'][0];
+			}
+			else
+			{
+				$version= $matches['version'][1];
+			}
+		}
+		else
+		{
+			$version= $matches['version'][0];
+		}
+			   
+		// check if we have a number
+		if ($version==null || $version=="") {$version="?";}
+			   
+		return array(
+		'userAgent' => $u_agent,
+		'name'      => $bname,
+		'version'   => $version,
+		'platform'  => $platform,
+		'pattern'    => $pattern
+		);
+	}
+
+
+
+?>
