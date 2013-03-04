@@ -34,8 +34,6 @@ class kPages
 		$this->ppage = $kSession->ppage;
 		$this->is_bot = $kSession->is_bot;
 		$this->is_mobile = $kSession->is_mobile;
-		$this->dr = MY_ROOT;
-		$this->dn = MY_DOMAIN_NAME;
 		$this->kAuth = new kAuth();
 		if(!$this->kAuth->verify() && $this->page != "login") header("Location: " . MY_KADMIN_URL . "login/");
 		switch($this->page)
@@ -96,7 +94,7 @@ class kPages
 			<!DOCTYPE html>
 			<html>
 				<head>
-					<title>KAdmin - <?=$this->dn;?></title>
+					<title>KAdmin - <?=MY_URL;?></title>
 			   	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
 					<? $this->kScript = new kScript("login"); ?>
 					<? $this->kStyle = new kStyle("main"); ?>
@@ -110,7 +108,7 @@ class kPages
 				<body>
 					<div id="pageholder">
 						<a href="<?=MY_KADMIN_URL;?>" class="logo"><img src="<?=MY_KADMIN_URL;?>style/images/kadminlogo.png" alt="KAdmin Logo"></a>
-						<a class="parent_logo" href="<?=MY_PARENT_URL;?>" title="<?=$this->dn;?>" target="_blank"><img src="<?=MY_KADMIN_URL;?>style/images/parentlogo.png" alt="<?=$this->dn;?> Logo" ></a>
+						<a class="parent_logo" href="<?=MY_URL;?>" title="<?=MY_URL;?>" target="_blank"><img src="<?=MY_URL;?>style/images/logos/mylogo_small.png" alt="<?=MY_URL;?> Logo" ></a>
 						<form onsubmit="login(); return false;" class="login-box">
 							<h1>KAdmin Authentication</h1>
 							<div id="login_status"><img src='<?=MY_KADMIN_URL;?>style/images/progress.gif'></div>
@@ -132,7 +130,7 @@ class kPages
 	<!DOCTYPE html>
 	<html>
 		<head>
-			<title>KAdmin - <?=$this->dn;?></title>
+			<title>KAdmin - <?=MY_URL;?></title>
 	   	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
 			<? $this->kScript = new kScript("authed"); ?>
 			<? $this->kStyle = new kStyle("authed"); ?>
@@ -145,7 +143,7 @@ class kPages
     	</head>
 		<body>
 			<a href="<?=MY_KADMIN_URL;?>" class="logo"><img src="<?=MY_KADMIN_URL;?>style/images/kadminlogo.png" alt="KAdmin Logo"></a>
-			<a class="parent_logo" href="<?=MY_PARENT_URL;?>" title="<?=$this->dn;?>" target="_blank"><img src="<?=MY_KADMIN_URL;?>style/images/parentlogo.png" alt="<?=$this->dn;?> Logo" ></a>
+			<a class="parent_logo" href="<?=MY_URL;?>" title="<?=MY_URL;?>" target="_blank"><img src="<?=MY_URL;?>style/images/logos/mylogo_small.png" alt="<?=MY_URL;?> Logo" ></a>
 			<div class="user_controls"><?=$_SESSION['fname'];?>
 				<div>
 					<a href="<?=MY_KADMIN_URL;?>users/<?=$_SESSION['uid'];?>/">Settings</a>
@@ -236,7 +234,7 @@ class kPages
 			case "none":
 				?>
 				<? $this->kStyle->users(); ?>
-				<h1>Users <?=$this->dn;?><img src="<?=MY_KADMIN_URL;?>style/images/usersicon.png" alt="Blog Icon"></h1>
+				<h1>Users <?=MY_URL;?><img src="<?=MY_KADMIN_URL;?>style/images/usersicon.png" alt="Blog Icon"></h1>
 				<div id="mv_contents">
 					<div class="user_type_select"><a href="<?=MY_KADMIN_URL;?>users/admins/" style="float: left"><img src="<?=MY_KADMIN_URL;?>style/images/admins2.png" alt="Administrators"></a><a href="<?=MY_KADMIN_URL;?>users/citizens/" style="float: right"><img src="<?=MY_KADMIN_URL;?>style/images/citizens.png" alt="Citizens"></a></div>
 				</div>
@@ -244,7 +242,7 @@ class kPages
 				break;
 			case "admins":
 				?>
-				<h1>Administrators <?=$this->dn;?><img src="<?=MY_KADMIN_URL;?>style/images/usersicon.png" alt="Blog Icon"></h1>
+				<h1>Administrators <?=MY_URL;?><img src="<?=MY_KADMIN_URL;?>style/images/usersicon.png" alt="Blog Icon"></h1>
 				<div id="mv_contents">
 					<div class="list_container">
 						<div class="list_row">
@@ -278,7 +276,7 @@ class kPages
 				break;
 			case "citizens":
 				?>
-				<h1>Citizens <?=$this->dn;?><img src="<?=MY_KADMIN_URL;?>style/images/usersicon.png" alt="Blog Icon"></h1>
+				<h1>Citizens <?=MY_URL;?><img src="<?=MY_KADMIN_URL;?>style/images/usersicon.png" alt="Blog Icon"></h1>
 				<div id="mv_contents">
 					<div class="list_container">
 						<div class="list_row">
@@ -312,7 +310,7 @@ class kPages
 				break;
 			case "new":
 				?>
-				<h1>New User <?=$this->dn;?><img src="<?=MY_KADMIN_URL;?>style/images/usersicon.png" alt="Users Icon"></h1>
+				<h1>New User <?=MY_URL;?><img src="<?=MY_KADMIN_URL;?>style/images/usersicon.png" alt="Users Icon"></h1>
 				<div id="mv_contents">
 					<form id="a_form">
 						<input type="hidden" name="action" value="new_user">
@@ -339,7 +337,7 @@ class kPages
 				if(isset($res))
 				{
 				?>
-				<h1><?=$res->fname . " " . $res->lname . " at";?> <?=$this->dn;?><img src="<?=MY_KADMIN_URL;?>style/images/usersicon.png" alt="Users Icon"></h1>
+				<h1><?=$res->fname . " " . $res->lname . " at";?> <?=MY_URL;?><img src="<?=MY_KADMIN_URL;?>style/images/usersicon.png" alt="Users Icon"></h1>
 				<div id="mv_contents">
 					<form id="a_form">
 						<input type="hidden" name="action" value="update_user">
@@ -382,7 +380,7 @@ class kPages
 		{
 			case "none":
 				?>
-				<h1>Blogs <?=$this->dn;?><img src="<?=MY_KADMIN_URL;?>style/images/newsicon.png" alt="Blog Icon"></h1>
+				<h1>Blogs <?=MY_URL;?><img src="<?=MY_KADMIN_URL;?>style/images/newsicon.png" alt="Blog Icon"></h1>
 				<div id="mv_contents">
 					<div class="blog_home">
 						<a href="<?=MY_KADMIN_URL;?>blog/all/"><img src="<?=MY_KADMIN_URL;?>style/images/blogall.png" alt="All Blogs"></a>
@@ -394,7 +392,7 @@ class kPages
 				break;
 			case "all":
 				?>
-				<h1>All Blogs <?=$this->dn;?><img src="<?=MY_KADMIN_URL;?>style/images/newsicon.png" alt="Blog Icon"></h1>
+				<h1>All Blogs <?=MY_URL;?><img src="<?=MY_KADMIN_URL;?>style/images/newsicon.png" alt="Blog Icon"></h1>
 				<div id="mv_contents">
 					<div class="list_container">
 						<div class="list_row">
@@ -425,7 +423,7 @@ class kPages
 				break;
 			case "recent":
 				?>
-				<h1>Recent Blogs <?=$this->dn;?><img src="<?=MY_KADMIN_URL;?>style/images/newsicon.png" alt="Blog Icon"></h1>
+				<h1>Recent Blogs <?=MY_URL;?><img src="<?=MY_KADMIN_URL;?>style/images/newsicon.png" alt="Blog Icon"></h1>
 				<div id="mv_contents">
 					<div class="list_container">
 						<div class="list_row">
@@ -466,7 +464,7 @@ class kPages
 				break;
 			case "mine":
 				?>
-				<h1>My Blogs <?=$this->dn;?><img src="<?=MY_KADMIN_URL;?>style/images/newsicon.png" alt="Blog Icon"></h1>
+				<h1>My Blogs <?=MY_URL;?><img src="<?=MY_KADMIN_URL;?>style/images/newsicon.png" alt="Blog Icon"></h1>
 				<div id="mv_contents">
 					<div class="list_container">
 						<div class="list_row">
@@ -507,7 +505,7 @@ class kPages
 				break;
 			case "new":
 				?>
-				<h1>New Blog for <?=$this->dn;?><img src="<?=MY_KADMIN_URL;?>style/images/newsicon.png" alt="Blog Icon"></h1>
+				<h1>New Blog for <?=MY_URL;?><img src="<?=MY_KADMIN_URL;?>style/images/newsicon.png" alt="Blog Icon"></h1>
 				<div id="mv_contents">
 						<div class="select_image">
 							<form id="image_upload">						
@@ -563,7 +561,7 @@ class kPages
 				else
 				{
 				?>
-				<h1><?=$this->pinfo;?> <?=$this->dn;?><img src="<?=MY_KADMIN_URL;?>style/images/newsicon.png" alt="Blog Icon"></h1>
+				<h1><?=$this->pinfo;?> <?=MY_URL;?><img src="<?=MY_KADMIN_URL;?>style/images/newsicon.png" alt="Blog Icon"></h1>
 				<div id="mv_contents">
 					<form id="form">
 						<input type="hidden" name="action" value="update_blog">
@@ -622,7 +620,7 @@ class kPages
 				$blog = $this->kSQL->selectret('blog', null, '*', null, "created_on DESC, created_at DESC");
 //				echo "</div>";
 				?>
-				<h1>Events <?=$this->dn;?><img src="<?=MY_KADMIN_URL;?>style/images/newsicon.png" alt="Blog Icon"></h1>
+				<h1>Events <?=MY_URL;?><img src="<?=MY_KADMIN_URL;?>style/images/newsicon.png" alt="Blog Icon"></h1>
 				<div id="mv_contents">
 					<div class="events_home">
 						<div class="entry_header"><div>Title</div><div>Author</div><div>Date</div></div>	
@@ -635,7 +633,7 @@ class kPages
 				break;
 			case "new":
 				?>
-				<h1>New Event for <?=$this->dn;?><img src="<?=MY_KADMIN_URL;?>style/images/newsicon.png" alt="Blog Icon"></h1>
+				<h1>New Event for <?=MY_URL;?><img src="<?=MY_KADMIN_URL;?>style/images/newsicon.png" alt="Blog Icon"></h1>
 				<div id="mv_contents">
 					<form id="blog_form">
 						<input type="hidden" name="action" value="new_blog">
@@ -657,7 +655,7 @@ class kPages
 				$blog = $this->kSQL->selectret('blog', 'id=' . $this->pinfo);
 				if(!isset($blog['id'])) echo "No Blog Found!";
 				?>
-				<h1><?=$this->pinfo;?> <?=$this->dn;?><img src="<?=MY_KADMIN_URL;?>style/images/newsicon.png" alt="Blog Icon"></h1>
+				<h1><?=$this->pinfo;?> <?=MY_URL;?><img src="<?=MY_KADMIN_URL;?>style/images/newsicon.png" alt="Blog Icon"></h1>
 				<div id="mv_contents">
 					<form id="blog_form">
 						<input type="hidden" name="action" value="update_blog">
@@ -719,7 +717,7 @@ class kPages
 	$q['where'] = "is_bot = 1 AND admin = 0";
 	$ptotalb = $this->kSQL->counter($q);
 	?>
-		<h1>Visits <?=$this->dn;?><img src="<?=MY_KADMIN_URL;?>style/images/visitsicon.png" alt="Blog Icon"></h1>
+		<h1>Visits <?=MY_URL;?><img src="<?=MY_KADMIN_URL;?>style/images/visitsicon.png" alt="Blog Icon"></h1>
 		<div id="mv_contents">
 			<div class="recent_visitors">
 				<h3>Recent Visitors</h3>

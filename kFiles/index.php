@@ -1,9 +1,6 @@
 <?php
 
-	/* Kevin's Index - aka kindex.php */
-			/* v5: Feb-26 2013 */
-
-	define("MY_ROOT", "/var/www/logicdudes.com/");
+	define("MY_ROOT", "ROOT FILE LOCATION GOES HERE!");
 
 	require_once MY_ROOT . "lib/secret/define.php";
 	require_once MY_ROOT . "lib/kSQL.php";	
@@ -21,7 +18,7 @@
 		exit();
 	}
 
-
 	$kSession = new kSession();
 	$kPages = new kPages();
+
 ?>

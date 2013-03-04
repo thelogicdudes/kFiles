@@ -1,9 +1,6 @@
 <?
 
-/*********************kAdmin*********************/
-/*******************Feb3-2013*********************/
-
-	define("MY_ROOT", "/var/www/logicdudes.com/");
+	define("MY_ROOT", "ROOT FILE LOCATION GOES HERE!");
 
 	require_once MY_ROOT . "lib/secret/define.php";
 	require_once MY_ROOT . "lib/kSQL.php";	
@@ -24,6 +21,5 @@
 	}
 	$kSession = new kSession();
 	$kPages = new kPages();
-
 
 ?>
