@@ -1,5 +1,5 @@
 <?
-	define("MY_ROOT", "/var/www/logicdudes.com/");
+	define("MY_ROOT", "/var/www/site.tld/");
 
 	require_once MY_ROOT . "lib/secret/define.php";
 
