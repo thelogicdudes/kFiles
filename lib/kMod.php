@@ -41,6 +41,15 @@
 			}
 		}
 
+		public function recent_tweets($n = 1)
+		{
+			$q['table'] = "tw_tweets";
+			$q['limit'] = $n;
+			$q['order'] = "created_at ASC";
+			$tweets = $this->kSQL->select($q);
+			echo "<p>" . $tweets->text . "</p><small><img src=\"" . $tweets->user_image_url . "\" alt=\"" . $tweets->user_name . "\" height='32px' width='32px'><a href=\"https://twitter.com/" . $tweets->user_screen_name . "\">" . $tweets->user_screen_name ."</a><br><time>" . $tweets->created_at . "</time></small>";
+		}
+
 		public function lay($what)
 		{
 			switch($what)
