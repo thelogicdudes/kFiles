@@ -9,8 +9,15 @@
 		private $result = array();
 		private $db;
 		
-		function __construct() 
+		function __construct($info = null) 
 		{
+			if(isset($info))
+			{
+				$this->db_host = $info['host'];
+				$this->db_name = $info['name'];
+				$this->db_user = $info['user'];
+				$this->db_pass = $info['pass'];
+			}
 			if(!$this->con)
 			{
 				try
