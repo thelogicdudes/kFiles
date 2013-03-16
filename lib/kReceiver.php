@@ -2,11 +2,12 @@
 
 	class kReceiver
 	{
-		private $hr;
-		
+		private kSQL;
+
 		function __construct() 
 		{
-			$this->hr = MY_URL;
+			global $kSQL;
+			$this->kSQL = $kSQL;
 			$action = $_POST['action'];
 			switch($action)
 			{
@@ -41,7 +42,7 @@
 			$p_style = "display: block;	padding: 11px; background-color: black; color: white; font-size: 17px;  border-radius: 7px;";
 			$mail_message .= "<html><head>";
 			$mail_message .= "</head><body>";
-			$mail_message .= "<img src='" . $this->hr . "style/images/logo-small.png' alt='ABA small logo' style='position: relative; top: -140px; left: -100px;'>";
+			$mail_message .= "<img src='" . MY_URL . "style/images/logo-small.png' alt='ABA small logo' style='position: relative; top: -140px; left: -100px;'>";
 			$mail_message .= "<br><br><div class='contact_details' style='display: block; background-color: gray;	padding: 7px; border-radius: 7px;'>";
 			$mail_message .= "<p style='$p_style'>Name: ".clean_string($contact_name)."</p>\n";
 			$mail_message .= "<p style='$p_style'>Email: <a href='mailto:".clean_string($contact_email)."'>".clean_string($contact_email)."</a></p>\n";
@@ -53,10 +54,29 @@
 			$headers .= "Reply-To: $contact_email\r\n";
 			$headers .= "MIME-Version: 1.0\r\n";
 			$headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
-			mail($mail_to, $mail_subject, $mail_message, $headers)
-				or die('2There was a problem. Please email webmaster@logicdudes.com or call (407) 477-4284');
-			echo "1Your message has been sent";
+			$from_name = mysql_escape_string($contact_name);
+			$from_email = mysql_escape_string($contact_email);
+			$from_tel = mysql_escape_string($contact_tel);
+			$subject = mysql_escape_string($contact_subject);
+			$contents = mysql_escape_string($contact_message);
+			$from_ip = $_SERVER['REMOTE_ADDR'];
+			$q['table'] = "site_contact";
+			$q['where'] = "from_ip='$from_ip' AND ts < (NOW() - INTERVAL 1 DAY)";
+			$ip_count = $this->kSQL->counter($q);
+			if($ip_count < 5)
+			{
+				unset($q['where']);
+				$q['rows'] = "from_email, from_name, from_tel, subject, contents";
+				$q['values'] = "\"$from_email\", \"$from_name\", \"$from_tel\", \"$subject\", \"$contents\""; 
+				$this->kSQL->insert($q);
+				mail($mail_to, $mail_subject, $mail_message, $headers)
+					or die('2There was a problem. Please email webmaster@logicdudes.com or call (407) 477-4284');
+				echo "1Your message has been sent";
+			}
+			else echo "2Woah, slow down bro. That's over 5 messages today, why don't you just call us at (407) 477-4294 :)";
 		}
+		
+		
 		private function contact_webmaster()
 		{
 			function clean_string($string)
@@ -76,7 +96,7 @@
 			$p_style = "display: block;	padding: 11px; background-color: black; color: white; font-size: 17px;  border-radius: 7px;";
 			$mail_message .= "<html><head>";
 			$mail_message .= "</head><body>";
-			$mail_message .= "<img src='" . $this->hr . "style/images/logo-small.png' alt='ABA small logo' style='position: relative; top: -140px; left: -100px;'>";
+			$mail_message .= "<img src='" . MY_URL . "style/images/logo-small.png' alt='ABA small logo' style='position: relative; top: -140px; left: -100px;'>";
 			$mail_message .= "<br><br><div class='contact_details' style='display: block; background-color: gray;	padding: 7px; border-radius: 7px;'>";
 			$mail_message .= "<p style='$p_style'>Name: ".clean_string($contact_name)."</p>\n";
 			$mail_message .= "<p style='$p_style'>Email: <a href='mailto:".clean_string($contact_email)."'>".clean_string($contact_email)."</a></p>\n";
