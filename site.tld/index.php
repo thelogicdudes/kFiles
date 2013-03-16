@@ -14,7 +14,7 @@
 
 	if(isset($_POST['action']))
 	{
-		require_once MY_ROOT . "lib/kReceiver.php";
+		require_once LIB_ROOT . "lib/kReceiver.php";
 		$kReceiver = new kReceiver();
 		exit();
 	}

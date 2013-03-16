@@ -6,13 +6,14 @@
 		}
 		public function fb_check()
 		{
-			require_once(MY_ROOT . "lib/fb/facebook.php");
-			$config['appId'] = FB_APP_ID;
-			$config['secret'] = FB_APP_SECRET;
-			$facebook = new Facebook($config);
-			$user = $facebook->getUser();
-			if($user) echo "1";
-			else echo "0";
+//			require_once LIB_ROOT . "fb/facebook.php";
+//			$config['appId'] = FB_APP_ID;
+//			$config['secret'] = FB_APP_SECRET;
+//			$facebook = new Facebook($config);
+//			$user = $facebook->getUser();
+//			if($user) echo "1";
+//			else echo "0";
+			echo "0";
 		}
 		public function fb_url()
 		{

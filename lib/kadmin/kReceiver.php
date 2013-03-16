@@ -11,8 +11,8 @@
 			global $kSQL;
 			$this->kSQL = $kSQL;
 			$action = $_POST['action'];
-			if(!$this->kAuth->verify() && $action != "login") exit('Ah, Ah, Ah.');
 			session_start();
+			if(!$this->kAuth->verify() && $action != "login") exit('Ah, Ah, Ah.');
 			switch($action)
 			{
 				case "login":
@@ -26,6 +26,12 @@
 					break;
 				case "update_blog":
 					$this->update_blog();
+					break;
+				case "new_news":
+					$this->new_news();
+					break;
+				case "update_news":
+					$this->update_news();
 					break;
 				case "new_user":
 					$this->new_user();
@@ -130,6 +136,79 @@
 		{
 			$id = $_POST['blog_id'];
 			$blog = $this->kSQL->selectret('blog', 'id='.$id);
+			$post_keys = array("title", "created_on", "created_at", "contents", "news_url", "image_url", "created_by_name", "created_by_id", "created_by_ip");
+			$c=0;
+			foreach($post_keys as $key)
+			{
+				$entry[$c] = $blog[$key]; 
+				$c++;
+			}
+			$entry[$c] = "NOW()";
+			$c++;
+			$entry[$c] = $id;
+			$sql_keys = implode(",", $post_keys);
+			$sql_keys .= ",ts,id";
+			$post_the_post = $this->kSQL->insert('old_blog', $entry, $sql_keys);
+
+			foreach($post_keys as $key)
+			{
+				$updates[$key] = mysql_escape_string($_POST[$key]); 
+			}
+			$post_the_post = $this->kSQL->update('blog', $updates, "id=".$id);
+			if($post_the_post) exit('Blog has been updated');
+			else exit('There was an error.');
+		}
+
+		private function new_news()
+		{
+
+			$post_keys = array("title", "contents", "created_by_name", "created_by_id", "created_by_ip", "image_url", "author_url", "author_image_url");
+			$c = 0;
+			foreach($post_keys as $key)
+			{
+				$entry[$c] = "\"" . mysql_escape_string($_POST[$key]) . "\""; 
+				$c++;
+			}
+			if(isset($_POST['news_url']))
+			{
+				$entry[$c] = "\"" . $_POST['news_url'] . "\"";
+				$post_keys[$c] = "news_url";
+				$c++;
+			}
+			if($_POST['facebook'] == "fb")
+			{
+				$this->kTools->fb_post($_POST['fb_text']);
+				$entry[$c] = "\"" . $_POST['fb_text'] . "\"";
+				$post_keys[$c] = "fb_text";
+				$c++;
+				$echo .= "fb!";
+			}
+			if($_POST['twitter'] == "tw")
+			{
+				$this->kTools->tw_tweet($_POST['tw_text']);
+				$entry[$c] = "\"" . $_POST['tw_text'] . "\"";
+				$post_keys[$c] = "tw_text";
+				$c++;
+				$echo .= "tw!";
+			}
+			$post_keys[$c] = "created_on";
+			$entry[$c] = "NOW()";
+			$c++;
+			$post_keys[$c] = "created_at";
+			$entry[$c] = "NOW()";
+			$q['table'] = "news";
+			$q['rows'] = implode(",", $post_keys);
+			$q['values'] = implode(",", $entry);
+			$post_the_post = $this->kSQL->insert($q);
+			if($post_the_post) $echo .= "posted!";
+			else $echo .= "NOT!!!";
+			exit($echo);
+		}
+		
+		private function update_news()
+		{
+			$id = $_POST['blog_id'];
+			$blog = $this->kSQL->selectret('news', 'id='.$id);
 			$post_keys = array("title", "created_on", "created_at", "contents", "news_url", "image_url", "created_by_name", "created_by_id", "created_by_ip");
 			$c=0;
 			foreach($post_keys as $key)

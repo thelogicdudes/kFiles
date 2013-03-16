@@ -45,9 +45,35 @@
 		{
 			$q['table'] = "tw_tweets";
 			$q['limit'] = $n;
-			$q['order'] = "created_at ASC";
+			$q['order'] = "id_str DESC";
 			$tweets = $this->kSQL->select($q);
-			echo "<p>" . $tweets->text . "</p><small><img src=\"" . $tweets->user_image_url . "\" alt=\"" . $tweets->user_name . "\" height='32px' width='32px'><a href=\"https://twitter.com/" . $tweets->user_screen_name . "\">" . $tweets->user_screen_name ."</a><br><time>" . $tweets->created_at . "</time></small>";
+			echo "<p>" . $tweets->text . "</p><small><img src=\"" . $tweets->user_profile_image_url . "\" alt=\"" . $tweets->user_name . "\" height='32px' width='32px'><a target='_blank' href=\"https://twitter.com/" . $tweets->user_screen_name . "\">@" . $tweets->user_screen_name ."</a><br><time>" . $tweets->created_at . "</time></small>";
+		}
+
+
+		public function recent_blog($n = 1)
+		{
+			$q['table'] = "blog";
+			$q['limit'] = $n;
+			$q['order'] = "id DESC";
+			$blog = $this->kSQL->select($q);
+			if($blog->image_url != "") echo "<img src=\"" . $blog->image_url . "\">";
+			echo "<h1>" . $blog->title . "</h1>";
+			echo "<p>" . $blog->contents . "</p>";
+			echo "<small>Posted by <img src=\"" . $blog->author_image_url . "\" alt=\"" . $blog->created_by_name . "\" height='32px' width='32px' ><a href=\"" . $blog->author_url . "\">" . $blog->created_by_name . "</a><br><time>" . $blog->created_at . "</time></small>";
+		}
+
+		public function recent_news($n = 1)
+		{
+			$q['table'] = "news";
+			$q['limit'] = $n;
+			$q['order'] = "id DESC";
+			$news = $this->kSQL->select($q);
+			echo "<a href=\"" . $news->news_url . "\" target='_blank'>";
+			if($news->image_url != "") echo "<img src=\"" . $news->image_url . "\">";
+			echo "<h1>" . $news->title . "</h1></a>";
+			echo "<p>" . $news->contents . "</p>";
+			echo "<small>Posted by <img src=\"" . $news->author_image_url . "\" alt=\"" . $news->created_by_name . "\" height='32px' width='32px' ><a href=\"" . $news->author_url . "\">" . $news->created_by_name . "</a><br><time>" . $news->created_at . "</time></small>";
 		}
 
 		public function lay($what)

@@ -17,7 +17,7 @@
 					$this->contact_webmaster();
 					break;
 				default:
-					echo "Default";
+					echo "1";
 					break;
 			}
 		}
@@ -54,7 +54,7 @@
 			$headers .= "MIME-Version: 1.0\r\n";
 			$headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
 			mail($mail_to, $mail_subject, $mail_message, $headers)
-				or die('2There was a problem. Please email admin@businessadvisors.pro or call (407) 476-7882');
+				or die('2There was a problem. Please email webmaster@logicdudes.com or call (407) 477-4284');
 			echo "1Your message has been sent";
 		}
 		private function contact_webmaster()
@@ -89,7 +89,7 @@
 			$headers .= "MIME-Version: 1.0\r\n";
 			$headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
 			mail($mail_to, $mail_subject, $mail_message, $headers)
-				or die("2There was a problem. Please email <a href='mailto:webmaster@businessadvisors.pro'>webmaster@businessadvisors.pro</a> or call (407) 477-4284");
+				or die("2There was a problem. Please email <a href='mailto:webmaster@businessadvisors.pro'>webmaster@logicdudes.com</a> or call (407) 477-4284");
 			echo "1Thank you for your feedback.";
 		}
 	}

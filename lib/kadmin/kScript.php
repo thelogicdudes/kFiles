@@ -35,7 +35,7 @@ public function login()
 			beforeSend: function()
 			{
 				$('#login_status').css("visibility", "visible");
-				$('#login_status').html("<img src='<?=MY_KADMIN_URL;?>style/images/progress.gif'>");
+				$('#login_status').html("<img src='<?=MY_KADMIN_URL;?>/style/images/progress.gif'>");
 			},
 			data:
 			{
@@ -47,7 +47,7 @@ public function login()
 			success: function(data)
 			{
 				$('#login_status').html(data);
-				if(data == "Success!") setTimeout(function(){ window.location = "<?=MY_KADMIN_URL;?>authed/"; }, 750);
+				if(data == "Success!") setTimeout(function(){ window.location = "<?=MY_KADMIN_URL;?>/authed"; }, 750);
 			}
 		});
 	}
@@ -65,7 +65,7 @@ public function authed()
 	<script type="text/javascript" >
 		var MY_KADMIN_URL = '<?=MY_KADMIN_URL;?>';
 		var locked = 1;
-		var fb_auth = <? $this->kTools->fb_check(); ?>;
+		var fb_auth = '<?=$this->kTools->fb_check(); ?>';
 		
 	function notification(msg, delay)
 	{

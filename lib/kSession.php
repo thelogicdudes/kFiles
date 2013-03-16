@@ -1,14 +1,4 @@
 <?
-
-/***************************************************************************
-
-								 		kSession
-							 LastUpdate: Feb-26 2013 	
-									 Version: 2.1 
-				 http://logicdudes.com - @kevashcraft 
-
-**************************************************************************/
-
 	class kSession
 	{
 		public $sid = null;
@@ -32,7 +22,7 @@
 				$this->is_bot = 1;
 			}
 			else $this->is_bot = 0;
-			if(isset($_GET['page'])) $this->page = $_GET['page'];
+			if(isset($_GET['page'])) if($_GET['page'] != "") $this->page = $_GET['page'];
 			if(isset($_GET['pinfo'])) $this->pinfo = $_GET['pinfo'];
 			if($this->is_bot == 0)
 			{
