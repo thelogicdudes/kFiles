@@ -2,7 +2,7 @@
 
 	class kReceiver
 	{
-		private kSQL;
+		private $kSQL;
 
 		function __construct() 
 		{
@@ -59,15 +59,16 @@
 			$from_tel = mysql_escape_string($contact_tel);
 			$subject = mysql_escape_string($contact_subject);
 			$contents = mysql_escape_string($contact_message);
-			$from_ip = $_SERVER['REMOTE_ADDR'];
+			$from_ip = ip2long($_SERVER['REMOTE_ADDR']);
 			$q['table'] = "site_contact";
-			$q['where'] = "from_ip='$from_ip' AND ts < (NOW() - INTERVAL 1 DAY)";
+			$q['where'] = "from_ip='$from_ip' AND ts > (NOW() - INTERVAL 1 DAY)";
 			$ip_count = $this->kSQL->counter($q);
+			echo $ip_count;
 			if($ip_count < 5)
 			{
 				unset($q['where']);
-				$q['rows'] = "from_email, from_name, from_tel, subject, contents";
-				$q['values'] = "\"$from_email\", \"$from_name\", \"$from_tel\", \"$subject\", \"$contents\""; 
+				$q['rows'] = "from_ip, from_email, from_name, from_tel, subject, contents";
+				$q['values'] = "\"$from_ip\", \"$from_email\", \"$from_name\", \"$from_tel\", \"$subject\", \"$contents\""; 
 				$this->kSQL->insert($q);
 				mail($mail_to, $mail_subject, $mail_message, $headers)
 					or die('2There was a problem. Please email webmaster@logicdudes.com or call (407) 477-4284');
